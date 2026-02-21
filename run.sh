@@ -8,6 +8,13 @@ uid=$(id -u)
 gid=$(id -g)
 user=$(id -un)
 group=$(id -gn)
+tmuxSessionTitle="${1:-}"
+
+set -x
+path="$containerHome"
+if [[ -n $tmuxSessionTitle ]]; then
+  path="$containerHome/${tmuxSessionTitle#*~}"
+fi
 
 # Check if container exists and started
 if docker ps -a --format '{{.Names}}' | grep -q "^${container}$"; then
@@ -21,8 +28,10 @@ else
     --hostname "$container" \
     --privileged \
     --network host \
+    --env DEVCONTAINER=1 \
     --volume "$HOME/.devcontainer:$containerHome" \
     --volume "$HOME/repos":"$containerHome/repos" \
+    --volume "$HOME/.ssh":"$containerHome/.ssh" \
     "$image"
 fi
 
@@ -46,4 +55,4 @@ docker exec -u $uid "$container" bash -c "
   ./install.sh
 "
 
-docker exec -it -u $user -w "$containerHome" "$container" bash
+docker exec -it -u $user -w "$path" "$container" bash

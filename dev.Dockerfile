@@ -8,7 +8,8 @@ RUN apt update -y \
   && apt install -y \
     curl \
     git \
-    sudo
+    sudo \
+    tmux
 
 RUN curl -o /tmp/nvim -L https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
 
