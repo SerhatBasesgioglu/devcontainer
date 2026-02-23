@@ -10,10 +10,9 @@ user=$(id -un)
 group=$(id -gn)
 tmuxSessionTitle="${1:-}"
 
-set -x
 path="$containerHome"
-if [[ -n $tmuxSessionTitle ]]; then
-  path="$containerHome/${tmuxSessionTitle#*~}"
+if [[ -n "$tmuxSessionTitle" ]]; then
+  path="$containerHome$tmuxSessionTitle"
 fi
 
 # Check if container exists and started
@@ -45,8 +44,6 @@ docker exec -u root "$container" bash -c "
   echo \"$user ALL=(ALL) NOPASSWD:ALL\" > /etc/sudoers.d/$user
   grep -q \"$container\" /etc/hosts || echo \"127.0.0.1\" $container >> /etc/hosts
 "
-
-
 
 # Setup dotfiles
 docker exec -u $uid "$container" bash -c "
